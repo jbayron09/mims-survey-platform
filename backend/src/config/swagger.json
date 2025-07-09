@@ -29,7 +29,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer" }
+            "schema": {
+              "type": "integer"
+            }
           }
         ],
         "responses": {
@@ -56,8 +58,38 @@
           }
         },
         "responses": {
-          "201": { "description": "Respuesta registrada" },
-          "400": { "description": "Error de validación" }
+          "201": {
+            "description": "Respuesta registrada"
+          },
+          "400": {
+            "description": "Error de validación"
+          }
+        }
+      }
+    },
+    "/metrics/{id}": {
+      "get": {
+        "summary": "Obtener métricas agrupadas por pregunta de una encuesta",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resumen de respuestas por pregunta"
+          },
+          "404": {
+            "description": "Encuesta no encontrada"
+          },
+          "500": {
+            "description": "Error interno del servidor"
+          }
         }
       }
     }
@@ -67,20 +99,34 @@
       "CreateResponseInput": {
         "type": "object",
         "properties": {
-          "surveyId": { "type": "integer", "minimum": 1 },
+          "surveyId": {
+            "type": "integer",
+            "minimum": 1
+          },
           "answers": {
             "type": "array",
             "items": {
               "type": "object",
               "properties": {
-                "questionId": { "type": "integer", "minimum": 1 },
-                "answerText": { "type": "string" },
-                "optionId": { "type": "integer", "minimum": 1 }
+                "questionId": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "answerText": {
+                  "type": "string"
+                },
+                "optionId": {
+                  "type": "integer",
+                  "minimum": 1
+                }
               }
             }
           }
         },
-        "required": ["surveyId", "answers"]
+        "required": [
+          "surveyId",
+          "answers"
+        ]
       }
     }
   }
