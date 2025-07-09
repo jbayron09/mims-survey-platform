@@ -2,17 +2,35 @@ import { PrismaClient, QuestionType } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-async function main() {
-  console.log('🌱 Seeding database...')
+async function cleanDatabase() {
+  console.log('🧹 Cleaning database and resetting sequences...')
 
+  // Elimina todos los datos (respetando dependencias)
   await prisma.responseAnswer.deleteMany()
   await prisma.response.deleteMany()
   await prisma.answerOption.deleteMany()
   await prisma.question.deleteMany()
   await prisma.survey.deleteMany()
 
+  // Reinicia todos los contadores de secuencia de IDs a 1
+  await prisma.$executeRawUnsafe(`
+    DO $$ DECLARE
+      r RECORD;
+    BEGIN
+      FOR r IN (
+        SELECT sequence_name
+        FROM information_schema.sequences
+        WHERE sequence_schema = 'public'
+      ) LOOP
+        EXECUTE 'ALTER SEQUENCE ' || quote_ident(r.sequence_name) || ' RESTART WITH 1';
+      END LOOP;
+    END $$;
+  `)
+}
+
+async function seedSurveys() {
   // Encuestas con preguntas y opciones tipadas
-  const surveysData: {
+  const surveys: {
     title: string
     questions: {
       text: string
@@ -78,8 +96,7 @@ async function main() {
     },
   ]
 
-  // Crear encuestas con validación tipada
-  for (const survey of surveysData) {
+  for (const survey of surveys) {
     await prisma.survey.create({
       data: {
         title: survey.title,
@@ -98,7 +115,12 @@ async function main() {
     })
   }
 
-  console.log('Seed completed successfully')
+  console.log('Database seeded successfully')
+}
+
+async function main() {
+  await cleanDatabase()
+  await seedSurveys()
 }
 
 main()
