@@ -1,67 +1,109 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, QuestionType } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
 async function main() {
   console.log('🌱 Seeding database...')
 
-  // Elimina todo si ya hay
   await prisma.responseAnswer.deleteMany()
   await prisma.response.deleteMany()
   await prisma.answerOption.deleteMany()
   await prisma.question.deleteMany()
   await prisma.survey.deleteMany()
 
-  // Crear una encuesta
-  const survey = await prisma.survey.create({
-    data: {
-      title: 'Encuesta de Satisfacción del Cliente',
-      questions: {
-        create: [
-          {
-            text: '¿Qué te gustó del servicio?',
-            type: 'TEXT',
-          },
-          {
-            text: '¿Cómo calificarías nuestro servicio?',
-            type: 'MULTIPLE_CHOICE',
-            options: {
-              create: [
-                { text: 'Excelente' },
-                { text: 'Bueno' },
-                { text: 'Regular' },
-                { text: 'Malo' },
-              ],
-            },
-          },
-          {
-            text: '¿Nos recomendarías?',
-            type: 'MULTIPLE_CHOICE',
-            options: {
-              create: [
-                { text: 'Sí, totalmente' },
-                { text: 'Tal vez' },
-                { text: 'No' },
-              ],
-            },
-          },
-        ],
-      },
+  // Encuestas con preguntas y opciones tipadas
+  const surveysData: {
+    title: string
+    questions: {
+      text: string
+      type: QuestionType
+      options?: string[]
+    }[]
+  }[] = [
+    {
+      title: 'Customer Satisfaction Survey',
+      questions: [
+        {
+          text: 'What did you like most about our service?',
+          type: 'TEXT',
+        },
+        {
+          text: 'How would you rate your experience?',
+          type: 'MULTIPLE_CHOICE',
+          options: ['Excellent', 'Good', 'Average', 'Poor'],
+        },
+        {
+          text: 'Would you recommend us to others?',
+          type: 'MULTIPLE_CHOICE',
+          options: ['Definitely', 'Maybe', 'No'],
+        },
+      ],
     },
-    include: {
-      questions: {
-        include: { options: true },
-      },
+    {
+      title: 'Product Feedback Survey',
+      questions: [
+        {
+          text: 'How often do you use the product?',
+          type: 'MULTIPLE_CHOICE',
+          options: ['Daily', 'Weekly', 'Monthly', 'Rarely'],
+        },
+        {
+          text: 'What feature do you use the most?',
+          type: 'TEXT',
+        },
+        {
+          text: 'How can we improve?',
+          type: 'TEXT',
+        },
+      ],
     },
-  })
+    {
+      title: 'Event Experience Survey',
+      questions: [
+        {
+          text: 'How satisfied were you with the event?',
+          type: 'MULTIPLE_CHOICE',
+          options: ['Very Satisfied', 'Satisfied', 'Neutral', 'Dissatisfied'],
+        },
+        {
+          text: 'What was your favorite part?',
+          type: 'TEXT',
+        },
+        {
+          text: 'Would you attend again?',
+          type: 'MULTIPLE_CHOICE',
+          options: ['Yes', 'Not Sure', 'No'],
+        },
+      ],
+    },
+  ]
 
-  console.log('Encuesta creada con ID:', survey.id)
-  console.log('Seed completado')
+  // Crear encuestas con validación tipada
+  for (const survey of surveysData) {
+    await prisma.survey.create({
+      data: {
+        title: survey.title,
+        questions: {
+          create: survey.questions.map((q) => ({
+            text: q.text,
+            type: q.type,
+            ...(q.options && {
+              options: {
+                create: q.options.map((opt) => ({ text: opt })),
+              },
+            }),
+          })),
+        },
+      },
+    })
+  }
+
+  console.log('Seed completed successfully')
 }
 
 main()
     .catch((e) => {
-      console.error('Error en el seed:', e)
+      console.error('Error during seeding:', e)
       process.exit(1)
     })
     .finally(async () => {
