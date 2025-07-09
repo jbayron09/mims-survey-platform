@@ -16,19 +16,10 @@ export default function SurveyPage({ params }: PageProps) {
 
   const handleComplete = (responses: CreateResponseInput) => {
     console.log('Survey completed with responses:', responses)
-    toast({
-      title: '¡Encuesta Enviada!',
-      description: 'Gracias por tu tiempo. Tus respuestas han sido registradas exitosamente.',
-    })
   }
 
   const handleError = (error: Error) => {
     console.error('Survey error:', error)
-    toast({
-      variant: 'destructive',
-      title: 'Error al Enviar Encuesta',
-      description: 'Hubo un problema al procesar tu encuesta. Por favor intenta de nuevo.',
-    })
   }
 
   return (
