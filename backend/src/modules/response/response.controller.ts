@@ -1,16 +1,27 @@
-import { Request, Response } from 'express'
-import { ResponseService } from './response.service'
+import { Request, Response } from 'express';
+import { ResponseService } from './response.service';
+import { createResponseSchema } from './response.schema';
 
-const responseService = new ResponseService()
+const responseService = new ResponseService();
 
 export class ResponseController {
   async create(req: Request, res: Response) {
     try {
-      const data = req.body
-      const result = await responseService.submitResponse(data)
-      res.status(201).json(result)
+      const parsed = createResponseSchema.parse(req.body); // 🔐 validación
+      const result = await responseService.submitResponse(parsed);
+      res.status(201).json(result);
     } catch (err: any) {
-      res.status(400).json({ message: err.message })
+      if (err.name === 'ZodError') {
+        return res.status(400).json({
+          message: 'Validación fallida',
+          errors: err.errors
+        });
+      }
+
+      return res.status(500).json({
+        message: 'Error del servidor',
+        error: err.message
+      });
     }
   }
 }

@@ -67,15 +67,15 @@
       "CreateResponseInput": {
         "type": "object",
         "properties": {
-          "surveyId": { "type": "integer" },
+          "surveyId": { "type": "integer", "minimum": 1 },
           "answers": {
             "type": "array",
             "items": {
               "type": "object",
               "properties": {
-                "questionId": { "type": "integer" },
+                "questionId": { "type": "integer", "minimum": 1 },
                 "answerText": { "type": "string" },
-                "optionId": { "type": "integer" }
+                "optionId": { "type": "integer", "minimum": 1 }
               }
             }
           }
