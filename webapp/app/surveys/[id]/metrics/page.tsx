@@ -1,9 +1,7 @@
-"use client"
+'use client'
 
-import { use, useState, useEffect } from "react"
-import Link from "next/link"
-import { Header } from '@/app/components/layout/Header'
-import { Footer } from '@/app/components/layout/Footer'
+import { use, useState, useEffect } from 'react'
+import Link from 'next/link'
 import { LoadingSpinner, useSurveyContext } from '@company/survey-sdk'
 import { EmptyState } from '@company/survey-sdk'
 import type { QuestionMetrics } from '@company/survey-sdk'
@@ -31,17 +29,9 @@ export default function MetricsPage({ params }: PageProps) {
         .finally(() => setLoading(false))
   }, [surveyId, api])
 
-  // useEffect(() => {
-  //   fetchMetrics(surveyId)
-  //     .then(setMetrics)
-  //     .catch((err) => setError(err.message))
-  //     .finally(() => setLoading(false))
-  // }, [surveyId])
-
-
   const getTotalResponses = () => {
     // ✅ Actualizado para usar 'results' en lugar de 'optionsCount'
-    const multipleChoiceQuestion = metrics.find((m) => m.type === "MULTIPLE_CHOICE" && m.results)
+    const multipleChoiceQuestion = metrics.find((m) => m.type === 'MULTIPLE_CHOICE' && m.results)
     if (multipleChoiceQuestion?.results) {
       return multipleChoiceQuestion.results.reduce((sum, option) => sum + option.count, 0)
     }
@@ -54,55 +44,45 @@ export default function MetricsPage({ params }: PageProps) {
 
   if (loading) {
     return (
-      <>
-        <Header />
-        <main className="py-12">
-          <div className="container">
+        <main className="flex-1 flex flex-col py-12">
+          <div className="flex-1 flex flex-col container">
             <div className="flex justify-center py-20">
               <div className="text-center">
-                <LoadingSpinner size="lg" />
+                <LoadingSpinner size="lg"/>
                 <h3 className="text-lg font-semibold mt-4 mb-2">Loading Analytics</h3>
                 <p className="text-gray-600">Analyzing survey responses...</p>
               </div>
             </div>
           </div>
         </main>
-        <Footer />
-      </>
     )
   }
 
   if (error) {
     return (
-      <>
-        <Header />
-        <main className="py-12">
-          <div className="container">
+        <main className="flex-1 flex flex-col py-12">
+          <div className="flex-1 flex flex-col container">
             <div className="card max-w-2xl mx-auto">
               <EmptyState
-                title="Failed to load metrics"
-                description={error}
-                action={
-                  <button onClick={() => window.location.reload()} className="btn-primary">
-                    Try Again
-                  </button>
-                }
+                  title="Failed to load metrics"
+                  description={error}
+                  action={
+                    <button onClick={() => window.location.reload()} className="btn-primary">
+                      Try Again
+                    </button>
+                  }
               />
             </div>
           </div>
         </main>
-        <Footer />
-      </>
     )
   }
 
   const totalResponses = getTotalResponses()
 
   return (
-    <>
-      <Header />
-      <main className="py-12">
-        <div className="container">
+      <main className="flex-1 flex flex-col py-12">
+        <div className="flex-1 flex flex-col container">
           {/* Breadcrumb */}
           <nav className="mb-8">
             <ol className="flex items-center space-x-2 text-sm text-gray-600">
@@ -164,56 +144,59 @@ export default function MetricsPage({ params }: PageProps) {
           {/* Questions Analytics */}
           <div className="space-y-8">
             {metrics.map((question, index) => (
-              <div key={question.questionId} className="card">
-                <div className="mb-6">
-                  <div className="flex items-start space-x-3">
-                    <span className="flex-shrink-0 w-8 h-8 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center text-sm font-semibold">
-                      {index + 1}
-                    </span>
-                    <div>
-                      <h3 className="text-xl font-semibold text-gray-900 mb-2">{question.questionText}</h3>
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                        {question.type === "MULTIPLE_CHOICE" ? "Multiple Choice" : "Text Response"}
+                <div key={question.questionId} className="card">
+                  <div className="mb-6">
+                    <div className="flex items-start space-x-3">
+                      <span
+                          className="flex-shrink-0 w-8 h-8 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center text-sm font-semibold">
+                        {index + 1}
                       </span>
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">{question.questionText}</h3>
+                        <span
+                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                          {question.type === 'MULTIPLE_CHOICE' ? 'Multiple Choice' : 'Text Response'}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {question.type === "MULTIPLE_CHOICE" && question.results ? (
-                  <div className="space-y-4">
-                    {question.results.map((option) => {
-                      const percentage = getPercentage(option.count, totalResponses)
-                      return (
-                        <div key={option.optionId} className="space-y-2">
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm font-medium text-gray-700">{option.optionText}</span>
-                            <span className="text-sm text-gray-600">
-                              {option.count} ({percentage}%)
-                            </span>
-                          </div>
-                          <div className="w-full bg-gray-200 rounded-full h-3">
-                            <div
-                              className="bg-blue-600 h-3 rounded-full transition-all duration-500"
-                              style={{ width: `${percentage}%` }}
-                            />
-                          </div>
+                  {question.type === 'MULTIPLE_CHOICE' && question.results ? (
+                      <div className="space-y-4">
+                        {question.results.map((option) => {
+                          const percentage = getPercentage(option.count, totalResponses)
+                          return (
+                              <div key={option.optionId} className="space-y-2">
+                                <div className="flex justify-between items-center">
+                                  <span className="text-sm font-medium text-gray-700">{option.optionText}</span>
+                                  <span className="text-sm text-gray-600">
+                                    {option.count} ({percentage}%)
+                                  </span>
+                                </div>
+                                <div className="w-full bg-gray-200 rounded-full h-3">
+                                  <div
+                                      className="bg-blue-600 h-3 rounded-full transition-all duration-500"
+                                      style={{ width: `${percentage}%` }}
+                                  />
+                                </div>
+                              </div>
+                          )
+                        })}
+                      </div>
+                  ) : (
+                      <div className="space-y-3">
+                        <h4 className="font-medium text-gray-900 mb-3">Recent Responses
+                          ({question.responses?.length})</h4>
+                        <div className="grid gap-3 max-h-64 overflow-y-auto">
+                          {question.responses?.map((answer, answerIndex) => (
+                              <div key={answerIndex} className="p-3 bg-gray-50 rounded-lg border-l-4 border-blue-500">
+                                <p className="text-gray-700 text-sm">"{answer}"</p>
+                              </div>
+                          ))}
                         </div>
-                      )
-                    })}
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    <h4 className="font-medium text-gray-900 mb-3">Recent Responses ({question.responses?.length})</h4>
-                    <div className="grid gap-3 max-h-64 overflow-y-auto">
-                      {question.responses?.map((answer, answerIndex) => (
-                        <div key={answerIndex} className="p-3 bg-gray-50 rounded-lg border-l-4 border-blue-500">
-                          <p className="text-gray-700 text-sm">"{answer}"</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
+                      </div>
+                  )}
+                </div>
             ))}
           </div>
 
@@ -231,7 +214,5 @@ export default function MetricsPage({ params }: PageProps) {
           </div>
         </div>
       </main>
-      <Footer />
-    </>
   )
 }

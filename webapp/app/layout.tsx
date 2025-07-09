@@ -5,6 +5,8 @@ import { SurveyProvider } from '@company/survey-sdk'
 import type { SurveySDKConfig } from '@company/survey-sdk'
 import { Toaster } from "@/components/ui/toaster"
 import "./globals.css"
+import { Footer } from '@/app/components/layout/Footer'
+import { Header } from '@/app/components/layout/Header'
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -28,13 +30,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} min-h-screen bg-gray-50 antialiased`}>
+      <html lang="en">
+      <body id="root" className={`min-h-screen flex flex-col bg-gray-50 antialiasedl`}>
       <SurveyProvider config={sdkConfig}>
-        <div id="root">{children}</div>
+        <Header/>
+        <div className="flex-1 flex flex-col">{children}</div>
+        <Footer />
         <Toaster />
       </SurveyProvider>
       </body>
-    </html>
+      </html>
   )
 }

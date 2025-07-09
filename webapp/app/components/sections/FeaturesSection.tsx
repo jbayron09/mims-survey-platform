@@ -12,7 +12,7 @@ export function FeaturesSection() {
         <div className="grid md:grid-cols-3 gap-8">
           {/* Feature 1 */}
           <div className="card text-center">
-            <div className="w-12 h-12 bg-blue-100 rounded-lg mx-auto flex items-center justify-center mb-4">
+            <div className="w-12 h-12 bg-blue-100 rounded-xl mx-auto flex items-center justify-center mb-4">
               <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01" />
               </svg>
@@ -23,7 +23,7 @@ export function FeaturesSection() {
 
           {/* Feature 2 */}
           <div className="card text-center">
-            <div className="w-12 h-12 bg-green-100 rounded-lg mx-auto flex items-center justify-center mb-4">
+            <div className="w-12 h-12 bg-green-100 rounded-xl mx-auto flex items-center justify-center mb-4">
               <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-6a2 2 0 012-2h6" />
               </svg>
@@ -34,7 +34,7 @@ export function FeaturesSection() {
 
           {/* Feature 3 */}
           <div className="card text-center">
-            <div className="w-12 h-12 bg-purple-100 rounded-lg mx-auto flex items-center justify-center mb-4">
+            <div className="w-12 h-12 bg-purple-100 rounded-xl mx-auto flex items-center justify-center mb-4">
               <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3" />
               </svg>
