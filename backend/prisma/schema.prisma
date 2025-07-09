@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Survey {
+  id        Int       @id @default(autoincrement())
+  title     String
+  createdAt DateTime  @default(now())
+  questions Question[]
+  responses Response[]
+}
+
+model Question {
+  id        Int       @id @default(autoincrement())
+  text      String
+  type      QuestionType
+  survey    Survey    @relation(fields: [surveyId], references: [id])
+  surveyId  Int
+  options   AnswerOption[] // solo si es de opción múltiple
+  answers   ResponseAnswer[]
+}
+
+model AnswerOption {
+  id         Int      @id @default(autoincrement())
+  text       String
+  question   Question @relation(fields: [questionId], references: [id])
+  questionId Int
+  responseAnswers ResponseAnswer[]
+}
+
+model Response {
+  id         Int         @id @default(autoincrement())
+  survey     Survey      @relation(fields: [surveyId], references: [id])
+  surveyId   Int
+  createdAt  DateTime    @default(now())
+  answers    ResponseAnswer[]
+}
+
+model ResponseAnswer {
+  id          Int       @id @default(autoincrement())
+  response    Response  @relation(fields: [responseId], references: [id])
+  responseId  Int
+  question    Question  @relation(fields: [questionId], references: [id])
+  questionId  Int
+  answerText  String?
+  optionId    Int?      // si seleccionó opción múltiple
+  option      AnswerOption? @relation(fields: [optionId], references: [id])
+}
+
+enum QuestionType {
+  TEXT
+  MULTIPLE_CHOICE
+}

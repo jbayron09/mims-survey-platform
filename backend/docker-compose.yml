@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:15
+    container_name: survey_api_db
+    environment:
+      - POSTGRES_USER=survey
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    container_name: survey_api_web
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - db
+    command: sh run.sh
+
+volumes:
+  postgres_data:
