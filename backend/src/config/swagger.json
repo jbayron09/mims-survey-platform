@@ -1,0 +1,87 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Survey API",
+    "version": "1.0.0",
+    "description": "API para gestionar encuestas, respuestas y métricas."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api"
+    }
+  ],
+  "paths": {
+    "/surveys": {
+      "get": {
+        "summary": "Obtener todas las encuestas",
+        "responses": {
+          "200": {
+            "description": "Lista de encuestas"
+          }
+        }
+      }
+    },
+    "/surveys/{id}": {
+      "get": {
+        "summary": "Obtener encuesta por ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Encuesta con preguntas"
+          },
+          "404": {
+            "description": "Encuesta no encontrada"
+          }
+        }
+      }
+    },
+    "/responses": {
+      "post": {
+        "summary": "Enviar respuestas a una encuesta",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateResponseInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Respuesta registrada" },
+          "400": { "description": "Error de validación" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateResponseInput": {
+        "type": "object",
+        "properties": {
+          "surveyId": { "type": "integer" },
+          "answers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "questionId": { "type": "integer" },
+                "answerText": { "type": "string" },
+                "optionId": { "type": "integer" }
+              }
+            }
+          }
+        },
+        "required": ["surveyId", "answers"]
+      }
+    }
+  }
+}
